@@ -6,11 +6,9 @@
   <title>JY의 점심 고민을 해결하는 AI 맞춤 추천</title>
   
   <meta property="og:title" content="JY의 점심 고민을 해결하는 AI 맞춤 추천">
-  <meta property="og:description" content="날씨, 기분, 예산을 고려해 AI가 딱 맞는 점심 메뉴를 추천해 드립니다.">
+  <meta property="og:description" content="날씨, 기분, 장르를 고려해 완벽한 점심 메뉴를 추천해 드립니다.">
   <meta property="og:image" content="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80">
   <meta property="og:type" content="website">
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9466460447530059" crossorigin="anonymous"></script>
 
   <style>
     :root {
@@ -67,7 +65,6 @@
     .retry-btn { background: var(--input-bg); color: var(--text-main); border: 1px solid var(--input-border); padding: 14px; border-radius: 12px; font-size: 15px; }
     .exclude-btn { background: #fff0f0; color: #e74c3c; border: 1px solid #fadbd8; padding: 14px; border-radius: 12px; font-size: 15px; }
     [data-theme="dark"] .exclude-btn { background: #3d1c1c; color: #ff8a8a; border: 1px solid #5c2b2b; }
-    .ad-placeholder { margin-top: 28px; padding: 20px; background: var(--weather-bg); border-radius: 16px; border: 1px dashed #ccc; text-align: center; color: var(--text-sub); font-size: 13px; min-height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
     .history-box { margin-top: 32px; padding: 20px; background: var(--weather-bg); border-radius: 16px; border: 1px dashed var(--border-color); display: none; }
     .history-box h3 { margin: 0 0 14px; font-size: 15px; color: var(--text-main); text-align: center; display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
     .clear-history { font-size: 13px; color: #888; cursor: pointer; background: none; border: none; padding: 6px 10px; width: auto; font-weight: 500; }
@@ -90,17 +87,16 @@
     <div class="card">
       <h1>JY의 점심 고민을 해결하는<br>AI 맞춤 추천</h1>
       <div class="subtitle">
-        복잡한 선택은 AI에게 맡기세요!<br>
-        완벽하게 필터링된 메뉴를 제안해 드립니다.
+        복잡한 선택은 그만!<br>
+        핵심만 딱 집어서 완벽한 메뉴를 제안해 드립니다.
       </div>
 
       <div class="weather-box" id="weatherContainer">
         <div class="weather-line" id="locationText">위치 정보를 확인하고 있습니다...</div>
         <div class="weather-line" id="weatherText">날씨 정보를 조회하고 있습니다...</div>
-        <div class="weather-line" id="weatherGuide" style="color: #666; font-size: 13px; margin-top: 10px;">위치 권한을 허용해주시면 맞춤 코멘트가 추가됩니다!</div>
       </div>
 
-      <div class="grid">
+      <div class="grid" style="grid-template-columns: 1fr;">
         <div>
           <label for="mood">현재 기분 및 상태</label>
           <select id="mood">
@@ -136,27 +132,8 @@
           </select>
         </div>
 
-        <div>
-          <label for="companion">식사 상황</label>
-          <select id="companion">
-            <option value="혼밥">혼자서 편하게</option>
-            <option value="동료와">동료 및 지인들과 함께</option>
-            <option value="법카">회사 찬스 (법인카드)</option>
-            <option value="바쁨">시간이 촉박함 (빠른 식사)</option>
-          </select>
-        </div>
-
-        <div style="grid-column: 1 / -1;">
-          <label for="budget">원하는 가격대</label>
-          <select id="budget">
-            <option value="적당히">적당한 가격</option>
-            <option value="가성비">가성비 위주</option>
-            <option value="플렉스">가격 상관없음 (고급스럽게)</option>
-          </select>
-        </div>
-
-        <button class="secondary-btn" onclick="loadWeather()" type="button" style="grid-column: 1 / -1;">현재 위치 및 날씨 업데이트</button>
-        <button id="recommendBtn" onclick="startRecommendation()" type="button" style="grid-column: 1 / -1;">AI 맞춤 추천받기</button>
+        <button class="secondary-btn" onclick="loadWeather()" type="button">현재 위치 및 날씨 업데이트</button>
+        <button id="recommendBtn" onclick="startRecommendation()" type="button">AI 점심 추천받기</button>
       </div>
 
       <div class="loading-container" id="loadingContainer">
@@ -180,11 +157,6 @@
             <button onclick="excludeAndRecommend()" class="exclude-btn">이 메뉴 제외하기</button>
           </div>
         </div>
-      </div>
-
-      <div class="ad-placeholder">
-        <span>Google AdSense 광고 노출 영역</span>
-        <span style="font-size: 11px; color: #999; margin-top: 4px;">(애드센스 승인 완료 후 여기에 광고 단위 코드를 삽입하세요)</span>
       </div>
 
       <div class="history-box" id="historyBox">
@@ -227,7 +199,6 @@
       71: "약한 눈", 73: "눈", 75: "강한 눈", 80: "소나기", 81: "소나기", 82: "강한 소나기", 95: "뇌우"
     };
 
-    // 철저하게 분리된 장르별 데이터베이스 (서로 절대 섞이지 않음)
     const baseMenus = {
       한식: {
         당떨어짐: ["불고기 백반", "제육볶음", "갈비찜", "뚝배기 불고기"],
@@ -367,54 +338,53 @@
       } else { historyBox.style.display = "none"; }
     }
 
-    // 완전히 단순화되고 강력해진 필터링 로직
     function recommendMenu() {
       const mood = document.getElementById("mood").value;
       const type = document.getElementById("type").value;
       const spice = document.getElementById("spice").value;
-      const budget = document.getElementById("budget").value;
 
-      // 1. 선택한 장르 고정
       let selectedType = type === "랜덤" ? ["한식", "양식", "일식", "중식", "아시안", "분식"][Math.floor(Math.random() * 6)] : type;
       
-      // 2. 해당 장르의 '모든' 메뉴 풀 생성 (이 장르를 절대 벗어나지 못함)
-      let genreMenus = [];
-      for (let key in baseMenus[selectedType]) {
-        genreMenus.push(...baseMenus[selectedType][key]);
-      }
-      genreMenus = [...new Set(genreMenus)];
-
-      // 3. 1차 후보: 선택한 장르 + 선택한 기분
+      // 1차 추출: 선택한 장르 안에서 선택한 기분 메뉴를 가져옴 (절대 이 장르를 안 벗어남)
       let candidates = [...baseMenus[selectedType][mood]];
 
-      // 4. 2차 후보: 맵기 조건 필터링
-      const spicyKeywords = ["마라", "짬뽕", "매운", "쭈꾸미", "불닭", "핫치킨", "엽기", "탄탄멘", "깐풍기", "똠얌"];
-      if (spice === "맵부심") {
+      // 맵기 키워드 정의
+      const spicyKeywords = ["마라", "짬뽕", "매운", "쭈꾸미", "불닭", "핫치킨", "엽기", "탄탄멘", "깐풍기", "똠얌", "떡볶이"];
+
+      // 2차 필터링: 맵기 조건 반영
+      if (spice === "맵부심" || spice === "적당히") {
         let spicyTemp = candidates.filter(m => spicyKeywords.some(k => m.includes(k)));
         if (spicyTemp.length > 0) {
           candidates = spicyTemp;
         } else {
-          // 해당 기분에 매운게 없으면, 장르 전체에서 매운걸 찾음
-          let genreSpicy = genreMenus.filter(m => spicyKeywords.some(k => m.includes(k)));
+          // 해당 기분에 매운 메뉴가 없다면, 그 '장르 전체'에서 매운 것을 가져옴
+          let genreAll = [];
+          for(let k in baseMenus[selectedType]) genreAll.push(...baseMenus[selectedType][k]);
+          let genreSpicy = genreAll.filter(m => spicyKeywords.some(k => m.includes(k)));
           if (genreSpicy.length > 0) candidates = genreSpicy;
         }
       } else if (spice === "맵찔이") {
-        // 안 매운 메뉴만 필터링
-        candidates = candidates.filter(m => !spicyKeywords.some(k => m.includes(k)));
-        if (candidates.length === 0) candidates = genreMenus.filter(m => !spicyKeywords.some(k => m.includes(k)));
+        let nonSpicyTemp = candidates.filter(m => !spicyKeywords.some(k => m.includes(k)));
+        if (nonSpicyTemp.length > 0) {
+          candidates = nonSpicyTemp;
+        } else {
+          // 해당 기분에 안 매운게 없으면, 장르 전체에서 안 매운 것을 가져옴
+          let genreAll = [];
+          for(let k in baseMenus[selectedType]) genreAll.push(...baseMenus[selectedType][k]);
+          candidates = genreAll.filter(m => !spicyKeywords.some(k => m.includes(k)));
+        }
       }
 
       // 블랙리스트 제외
       candidates = candidates.filter(m => !excludedMenus.includes(m));
 
-      // 5. 최후의 보루 (조건이 다 안 맞아서 0개가 된 경우)
+      // 혹시라도 조건이 꼬여서 0개가 되었다면 기분+장르 기본값으로 복귀
       if (candidates.length === 0) {
-        candidates = genreMenus.filter(m => !excludedMenus.includes(m)); // 장르 전체에서 제외메뉴만 뺌
-        if(candidates.length === 0) candidates = genreMenus.slice(0, 3); // 그래도 없으면 기본 3개
-        showToast("조건이 까다로워 장르 위주로 맞춤 추천합니다.");
+        candidates = [...baseMenus[selectedType][mood]];
+        showToast("조건이 까다로워 장르와 기분 위주로 추천합니다.");
       }
 
-      // 6. 최종 랜덤 픽
+      // 최종 랜덤 선택
       currentMenu = candidates[Math.floor(Math.random() * candidates.length)];
 
       historyMenus.unshift(currentMenu);
@@ -423,19 +393,17 @@
       updateHistoryUI();
 
       // 화면 출력
-      document.getElementById("finalMenuName").innerText = `[${currentMenu}]`;
+      document.getElementById("finalMenuName").innerText = `${currentMenu}`;
       
-      let explainText = `🤖 AI 점심 고민 해결사:\n`;
+      let explainText = `🤖 AI 맞춤 분석 결과:\n`;
       explainText += `선택하신 [${selectedType}] 장르 중에서, `;
-      explainText += `[${mood}] 상태에 딱 맞는 메뉴를 찾아냈습니다. `;
+      explainText += `[${mood}] 상태에 딱 맞는 메뉴를 찾았습니다. `;
       if (weatherState.loaded) explainText += `오늘 ${weatherState.weatherLabel} 날씨와도 잘 어울릴 거예요!`;
       
       document.getElementById("resultReason").innerText = explainText;
 
       const tags = [selectedType, mood];
       if (spice !== "상관없음") tags.push(spice === "맵찔이" ? "순한맛" : spice === "적당히" ? "매콤" : "아주 맵게");
-      if (weatherState.loaded) tags.push(weatherState.weatherLabel);
-      if (budget !== "적당히") tags.push(budget === "가성비" ? "가성비" : "고급스럽게");
       
       const tagsContainer = document.getElementById("resultTags");
       tagsContainer.innerHTML = tags.map(t => `<span class="tag">#${t}</span>`).join("");
