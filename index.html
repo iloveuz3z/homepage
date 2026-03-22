@@ -100,6 +100,28 @@
       margin-bottom: 12px;
       color: #d84315;
     }
+    
+    /* 메뉴 이미지 스타일 추가 */
+    .result-image-container {
+      width: 100%;
+      height: 220px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      background: #f0f0f0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      display: none; /* 초기에는 숨김 */
+    }
+    .result-image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* 이미지가 찌그러지지 않게 꽉 채움 */
+      transition: transform 0.3s ease;
+    }
+    .result-image-container img:hover {
+      transform: scale(1.05);
+    }
+
     .result-sub {
       color: #555;
       margin-bottom: 18px;
@@ -258,6 +280,11 @@
 
       <div class="result-card" id="resultCard">
         <div class="result-title" id="resultTitle"></div>
+        
+        <div class="result-image-container" id="resultImageContainer">
+          <img id="resultImage" src="" alt="추천 메뉴 이미지" />
+        </div>
+
         <div class="tags" id="resultTags"></div>
         <div class="result-sub" id="resultReason"></div>
         
@@ -288,7 +315,6 @@
       isRainy: false, isHot: false, isCold: false
     };
 
-    // 추가 기능: 제외된 메뉴와 히스토리 관리
     let excludedMenus = [];
     let historyMenus = [];
     let currentMenu = "";
@@ -337,6 +363,30 @@
       hot: ["냉면", "메밀소바", "초밥", "포케", "샐러드볼", "냉모밀"],
       cold: ["찌개", "국밥", "라멘", "탕", "전골", "카레"]
     };
+
+    // [신규 기능] 대표 메뉴들에 대한 고해상도 무료 이미지(Unsplash) 매핑
+    // 여기에 없는 메뉴는 defaultFoodImage가 출력됩니다.
+    const menuImages = {
+      "제육볶음": "https://images.unsplash.com/photo-1580651315530-69c8e0026377?w=600&h=400&fit=crop",
+      "비빔밥": "https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=600&h=400&fit=crop",
+      "파스타": "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600&h=400&fit=crop",
+      "초밥": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&h=400&fit=crop",
+      "짜장면": "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&h=400&fit=crop",
+      "샐러드볼": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop",
+      "돈까스": "https://images.unsplash.com/photo-1595295333158-4742f28fbd85?w=600&h=400&fit=crop",
+      "피자": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&h=400&fit=crop",
+      "햄버거": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=400&fit=crop",
+      "샌드위치": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&h=400&fit=crop",
+      "냉면": "https://images.unsplash.com/photo-1634500055271-4770e060c5fa?w=600&h=400&fit=crop", // 면 요리 느낌
+      "우동": "https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=600&h=400&fit=crop",
+      "포케볼": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=400&fit=crop",
+      "초밥": "https://images.unsplash.com/photo-1553621042-f6e147245754?w=600&h=400&fit=crop",
+      "라멘": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&h=400&fit=crop",
+      "스테이크 덮밥": "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600&h=400&fit=crop"
+    };
+
+    // 매핑되지 않은 메뉴가 나왔을 때 보여줄 기본(Fallback) 맛있는 음식 이미지
+    const defaultFoodImage = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop";
 
     async function loadWeather() {
       const locationText = document.getElementById("locationText");
@@ -392,12 +442,11 @@
           locationText.innerText = `📍 위치: ${city}`;
           weatherText.innerText = `🌡️ 날씨: ${label}, ${temp}°C`;
 
-          // 기능 4: 날씨에 따라 화면 문구와 아이콘(UI) 능동적 변경
           let guide = "💡 오늘 날씨에 딱 맞는 메뉴를 찾아드릴게요!";
-          weatherContainer.style.background = "#fff7f0"; // 기본 배경
+          weatherContainer.style.background = "#fff7f0"; 
           if (weatherState.isRainy) {
             guide = "☔ 비가 오네요! 따뜻한 국물 요리에 가중치를 둘게요.";
-            weatherContainer.style.background = "#f0f8ff"; // 비오는 날 푸른 배경
+            weatherContainer.style.background = "#f0f8ff"; 
           } else if (weatherState.isHot) {
             guide = "🧊 날씨가 덥네요! 시원하고 가벼운 메뉴를 더 반영할게요.";
             weatherContainer.style.background = "#fff0f5";
@@ -418,7 +467,6 @@
       }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 });
     }
 
-    // 기능 2: 이 메뉴 제외하기 로직
     function excludeAndRecommend() {
       if (currentMenu && !excludedMenus.includes(currentMenu)) {
         excludedMenus.push(currentMenu);
@@ -426,7 +474,6 @@
       recommendMenu();
     }
 
-    // 기능 1: 히스토리 업데이트 함수
     function updateHistoryUI() {
       const historyBox = document.getElementById("historyBox");
       const historyList = document.getElementById("historyList");
@@ -456,14 +503,12 @@
 
       let candidateMenus = [...baseMenus[selectedType][mood]];
 
-      // 날씨 반영
       if (weatherState.loaded) {
         if (weatherState.isRainy) candidateMenus = candidateMenus.concat(weatherMenus.rainy);
         if (weatherState.isHot) candidateMenus = candidateMenus.concat(weatherMenus.hot);
         if (weatherState.isCold) candidateMenus = candidateMenus.concat(weatherMenus.cold);
       }
 
-      // 매운 음식 선호 반영
       if (spice === "좋아함") {
         const spicyBoost = ["마라탕", "짬뽕", "매운 라멘", "쭈꾸미볶음", "닭갈비", "탄탄멘", "부대찌개"];
         candidateMenus = candidateMenus.concat(spicyBoost);
@@ -474,7 +519,6 @@
         });
       }
 
-      // 상황 반영
       if (companion === "혼밥") {
         const soloBoost = ["덮밥", "국밥", "우동", "소바", "포케", "샐러드볼", "볶음밥"];
         candidateMenus = candidateMenus.concat(candidateMenus.filter(menu => soloBoost.some(word => menu.includes(word))));
@@ -484,33 +528,38 @@
         candidateMenus = candidateMenus.concat(["브런치 플레이트", "포케볼", "초밥", "트러플 파스타", "냉면", "샌드위치"]);
       }
 
-      // 기능 2 적용: 사용자가 제외한 메뉴 필터링
       candidateMenus = candidateMenus.filter(m => !excludedMenus.includes(m));
 
-      // 만약 제외하다가 후보가 다 사라지면 초기화
       if (candidateMenus.length === 0) {
         candidateMenus = ["비빔밥", "파스타", "우동", "짜장면"];
-        excludedMenus = []; // 너무 많이 제외했을 때를 대비한 엣지케이스 처리
+        excludedMenus = []; 
       }
 
       const menu = candidateMenus[Math.floor(Math.random() * candidateMenus.length)];
-      currentMenu = menu; // 현재 추천된 메뉴 저장
+      currentMenu = menu; 
 
-      // 기능 1 적용: 최근 추천 배열 업데이트 (최대 3개 유지)
       historyMenus.unshift(menu);
       if (historyMenus.length > 3) historyMenus.pop();
       updateHistoryUI();
 
-      // 화면 업데이트
       const resultCard = document.getElementById("resultCard");
       const resultTitle = document.getElementById("resultTitle");
       const resultReason = document.getElementById("resultReason");
       const resultTags = document.getElementById("resultTags");
       const mapsLink = document.getElementById("mapsLink");
+      
+      // 이미지 관련 DOM 
+      const imgContainer = document.getElementById("resultImageContainer");
+      const imgElement = document.getElementById("resultImage");
 
       resultTitle.innerText = `오늘의 추천: ${menu}!`;
 
-      // 기능 5: 추천 이유를 더 구체적이고 서비스처럼 제공(Explainability)
+      // 이미지 세팅 (미리 준비된 이미지가 없으면 기본 이미지 표시)
+      const imageUrl = menuImages[menu] || defaultFoodImage;
+      imgElement.src = imageUrl;
+      imgElement.alt = `${menu} 이미지`;
+      imgContainer.style.display = "block"; // 숨겨뒀던 이미지 박스 표시
+
       let explainText = `🤖 AI 추천 코멘트: `;
       if (weatherState.loaded) {
         if (weatherState.isRainy) explainText += `비 오는 날씨 ☔ 에 어울리는 국물 요리를 우선 고려했고, `;
@@ -524,7 +573,6 @@
       
       resultReason.innerText = explainText;
 
-      // 태그 생성
       const tags = [mood, selectedType, companion];
       if (spice !== "상관없음") tags.push(`매운맛 ${spice}`);
       if (weatherState.loaded) tags.push(`${weatherState.weatherLabel} ${weatherState.temperature}°C`);
@@ -537,10 +585,8 @@
         resultTags.appendChild(span);
       });
 
-      // 기능 3: 근처 맛집 검색 (구글 맵 연결)
-      // 사용자의 현재 도시가 로드되어 있으면 지역명도 쿼리에 포함
       const searchLocation = weatherState.city && weatherState.city !== "현재 위치" ? weatherState.city : "근처";
-      mapsLink.href = `https://www.google.com/maps/search/${searchLocation}+${menu}+맛집`;
+      mapsLink.href = `https://www.google.com/maps/search/$${searchLocation}+${menu}+맛집`;
       mapsLink.innerText = `🗺️ 구글맵에서 '${searchLocation} ${menu}' 찾기`;
 
       resultCard.style.display = "block";
