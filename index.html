@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오늘 점심 뭐 먹지?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 720px;
+      margin: 60px auto;
+      padding: 20px;
+      text-align: center;
+      line-height: 1.6;
+      background: #fffaf5;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .box {
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    select, button {
+      padding: 10px 14px;
+      margin: 8px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background: #ff8a65;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    #result {
+      margin-top: 24px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    #reason {
+      margin-top: 8px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>🍽️ 오늘 점심 뭐 먹지?</h1>
+    <p>기분과 스타일을 고르면 메뉴를 추천해드려요.</p>
+
+    <select id="mood">
+      <option value="든든">든든하게</option>
+      <option value="가볍게">가볍게</option>
+      <option value="스트레스">스트레스 해소</option>
+      <option value="건강">건강하게</option>
+    </select>
+
+    <select id="type">
+      <option value="한식">한식</option>
+      <option value="양식">양식</option>
+      <option value="일식">일식</option>
+      <option value="랜덤">랜덤</option>
+    </select>
+
+    <br>
+    <button onclick="recommendMenu()">추천받기</button>
+
+    <div id="result"></div>
+    <div id="reason"></div>
+  </div>
+
+  <script>
+    function recommendMenu() {
+      const mood = document.getElementById("mood").value;
+      const type = document.getElementById("type").value;
+
+      const menus = {
+        한식: {
+          든든: ["제육볶음", "김치찌개", "순두부찌개"],
+          가볍게: ["비빔밥", "칼국수", "콩나물국밥"],
+          스트레스: ["매운 갈비찜", "부대찌개", "쭈꾸미볶음"],
+          건강: ["쌈밥", "된장찌개", "닭곰탕"]
+        },
+        양식: {
+          든든: ["파스타", "리조또", "햄버거"],
+          가볍게: ["샌드위치", "브런치 플레이트", "스프와 빵"],
+          스트레스: ["매운 크림파스타", "피자", "치즈버거"],
+          건강: ["샐러드볼", "그릴드 치킨 샐러드", "연어 포케"]
+        },
+        일식: {
+          든든: ["돈까스", "규동", "우동 세트"],
+          가볍게: ["소바", "초밥", "연어덮밥"],
+          스트레스: ["매운 라멘", "가라아게 카레", "탄탄멘"],
+          건강: ["사시미 덮밥", "메밀소바", "연어 샐러드"]
+        }
+      };
+
+      let selectedType = type;
+      if (type === "랜덤") {
+        const types = ["한식", "양식", "일식"];
+        selectedType = types[Math.floor(Math.random() * types.length)];
+      }
+
+      const list = menus[selectedType][mood];
+      const menu = list[Math.floor(Math.random() * list.length)];
+
+      document.getElementById("result").innerText = `추천 메뉴: ${menu}`;
+      document.getElementById("reason").innerText =
+        `${mood} 기분에 맞는 ${selectedType} 메뉴로 골라봤어요.`;
+    }
+  </script>
+</body>
+</html>
