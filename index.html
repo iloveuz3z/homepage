@@ -36,7 +36,6 @@
     .container { max-width: 860px; margin: 20px auto 48px; padding: 0 20px; flex: 1; width: 100%; }
     .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 28px; box-shadow: 0 10px 24px var(--shadow); transition: all 0.3s ease; }
     h1 { margin: 0 0 8px; font-size: 32px; text-align: center; font-weight: 800; letter-spacing: -0.5px; }
-    /* JY 정체성 강조 스타일 */
     h1 span.author { color: var(--btn-primary); font-size: 0.9em; }
     .subtitle { text-align: center; color: var(--text-sub); margin-bottom: 24px; line-height: 1.6; font-size: 15px; }
     .weather-box { background: var(--weather-bg); border: 1px solid var(--weather-border); border-radius: 16px; padding: 16px; margin-bottom: 24px; transition: all 0.3s ease; }
@@ -53,8 +52,6 @@
     .loading-container { display: none; text-align: center; padding: 40px 0; margin-top: 22px; }
     .spinner { width: 40px; height: 40px; border: 4px solid rgba(255, 107, 53, 0.2); border-top-color: var(--btn-primary); border-radius: 50%; animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite; margin: 0 auto 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    
-    /* 결과 카드 스타일 (이미지 영역 제거로 간소화) */
     .result-card { margin-top: 24px; padding: 24px; border-radius: 20px; background: var(--result-bg); border: 2px solid var(--border-color); display: none; text-align: center; opacity: 0; transform: translateY(20px); animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
     .result-title { font-size: 26px; font-weight: 800; margin-bottom: 20px; color: var(--btn-primary); word-break: keep-all; line-height: 1.3; }
@@ -70,10 +67,7 @@
     .retry-btn { background: var(--input-bg); color: var(--text-main); border: 1px solid var(--input-border); padding: 14px; border-radius: 12px; font-size: 15px; }
     .exclude-btn { background: #fff0f0; color: #e74c3c; border: 1px solid #fadbd8; padding: 14px; border-radius: 12px; font-size: 15px; }
     [data-theme="dark"] .exclude-btn { background: #3d1c1c; color: #ff8a8a; border: 1px solid #5c2b2b; }
-    
-    /* 광고 영역 스타일 */
     .ad-placeholder { margin-top: 28px; padding: 20px; background: var(--weather-bg); border-radius: 16px; border: 1px dashed #ccc; text-align: center; color: var(--text-sub); font-size: 13px; min-height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-    
     .history-box { margin-top: 32px; padding: 20px; background: var(--weather-bg); border-radius: 16px; border: 1px dashed var(--border-color); display: none; }
     .history-box h3 { margin: 0 0 14px; font-size: 15px; color: var(--text-main); text-align: center; display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
     .clear-history { font-size: 13px; color: #888; cursor: pointer; background: none; border: none; padding: 6px 10px; width: auto; font-weight: 500; }
@@ -81,12 +75,9 @@
     .history-list { list-style: none; padding: 0; margin: 0; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
     .history-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 999px; font-size: 13px; color: var(--text-sub); font-weight: 500; box-shadow: 0 2px 6px var(--shadow); }
     .history-item.excluded { text-decoration: line-through; opacity: 0.5; background: transparent; box-shadow: none; }
-    
     #toast { visibility: hidden; min-width: 260px; background-color: rgba(33,33,33,0.9); color: #fff; text-align: center; border-radius: 10px; padding: 14px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px); font-size: 14px; font-weight: 500; opacity: 0; transition: all 0.3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.15); backdrop-filter: blur(4px); }
     #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
-    
     footer { text-align: center; padding: 25px; color: var(--text-sub); font-size: 13px; margin-top: auto; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.02); }
-
     @media (max-width: 700px) { .grid, .action-row { grid-template-columns: 1fr; flex-direction: column; } .result-title { font-size: 22px; } }
   </style>
 </head>
@@ -212,7 +203,6 @@
   <div id="toast"></div>
 
   <script>
-    // 테마 및 상태 관리 스크립트 (이미지 매핑 로직 제거됨)
     function toggleTheme() {
       const body = document.body;
       const toggleBtn = document.getElementById("themeToggle");
@@ -234,7 +224,6 @@
       71: "약한 눈", 73: "눈", 75: "강한 눈", 80: "소나기", 81: "소나기", 82: "강한 소나기", 95: "뇌우"
     };
 
-    // 메뉴 데이터베이스 (기존과 동일)
     const baseMenus = {
       한식: {
         당떨어짐: ["불고기 백반", "제육볶음", "갈비찜", "뚝배기 불고기"],
@@ -253,241 +242,4 @@
         개운: ["안심 스테이크", "트러플 파스타", "연어 파피요트", "관자 리조또"]
       },
       일식: {
-        당떨어짐: ["돈까스", "텐동", "가츠동", "치킨가라아게동"],
-        스트레스: ["매운 카레", "탄탄멘", "매운 돈코츠 라멘", "김치 가츠동"],
-        귀찮음: ["편의점 삼각김밥", "유부초밥", "우동", "가라아게"],
-        갓생: ["연어 덮밥", "낫또 덮밥", "메밀소바", "연어 샐러드"],
-        국밥바이브: ["우동 정식", "밀푀유 나베", "돈코츠 라멘", "스끼야끼"],
-        개운: ["장어덮밥", "스시 세트", "카이센동", "참치 덮밥"]
-      },
-      중식: {
-        당떨어짐: ["짜장면", "새우 볶음밥", "탕수육", "꿔바로우"],
-        스트레스: ["마라탕", "매운 짬뽕", "마라샹궈", "깐풍기", "지삼선"],
-        귀찮음: ["볶음밥", "짬짜면", "군만두", "마파두부 덮밥"],
-        갓생: ["토마토 달걀 볶음", "청경채 볶음", "해물 누룽지탕", "야채죽"],
-        국밥바이브: ["짬뽕밥", "백짬뽕", "우육면", "굴짬뽕"],
-        개운: ["멘보샤", "유산슬", "북경오리", "동파육"]
-      },
-      아시안: {
-        당떨어짐: ["팟타이", "나시고랭", "뿌팟퐁커리", "파인애플 볶음밥"],
-        스트레스: ["마라샹궈", "똠얌꿍", "매운 소고기 쌀국수", "마라 쌀국수"],
-        귀찮음: ["반미 샌드위치", "컵 쌀국수", "에그누들 볶음"],
-        갓생: ["월남쌈", "분짜", "닭고기 쌀국수", "포케"],
-        국밥바이브: ["양지 쌀국수", "똠얌꿍", "완탕면", "쌀국수 정식"],
-        개운: ["반세오", "커리 크랩", "갈비 쌀국수", "푸팟퐁커리"]
-      },
-      분식: {
-        당떨어짐: ["떡볶이", "모둠 튀김", "핫도그", "피자빵"],
-        스트레스: ["매운 떡볶이", "매운 쫄면", "불닭볶음면", "매운 어묵"],
-        귀찮음: ["컵라면", "참치김밥", "라면", "핫바"],
-        갓생: ["키토김밥", "곤약 떡볶이", "단백질 바", "계란 샌드위치"],
-        국밥바이브: ["어묵탕", "라면 정식", "떡만두국", "잔치국수"],
-        개운: ["스페셜 떡볶이 세트", "순대", "차돌 떡볶이"]
-      }
-    };
-
-    const weatherMenus = {
-      rainy: ["칼국수", "우동 정식", "짬뽕", "돼지국밥", "수제비", "밀푀유 나베", "마라탕", "양지 쌀국수", "파전"],
-      hot: ["냉면", "메밀소바", "초밥", "포케볼", "샐러드볼", "월남쌈", "비빔면"],
-      cold: ["김치찌개", "돼지국밥", "돈코츠 라멘", "설렁탕", "스튜", "감자탕", "우동 정식", "짬뽕밥"]
-    };
-
-    // 이미지 로직 제거로 인해 관련 함수들 수정됨
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.innerText = message; toast.className = "show";
-      setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
-    }
-
-    async function loadWeather() {
-      const locationText = document.getElementById("locationText");
-      const weatherText = document.getElementById("weatherText");
-      
-      if (!navigator.geolocation) { showToast("브라우저에서 위치 기능을 지원하지 않습니다."); return; }
-      locationText.innerText = "현재 위치를 확인 중입니다..."; weatherText.innerText = "날씨 정보를 불러오는 중입니다...";
-
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        try {
-          const lat = position.coords.latitude; const lon = position.coords.longitude;
-          const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`;
-          const weatherData = await (await fetch(weatherUrl)).json();
-          
-          const temp = weatherData.current.temperature_2m;
-          const code = weatherData.current.weather_code;
-          const label = weatherCodeMap[code] || "확인 필요";
-
-          let city = "현재 위치";
-          try {
-            const geoData = await (await fetch(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=ko`)).json();
-            if (geoData.results?.length > 0) city = geoData.results[0].city || geoData.results[0].name || "현재 위치";
-          } catch (e) {}
-
-          weatherState = { loaded: true, city, temperature: temp, weatherLabel: label, isRainy: [51,53,55,61,63,65,71,73,75,80,81,82,95].includes(code), isHot: temp >= 27, isCold: temp <= 8 };
-
-          locationText.innerText = `현재 위치: ${city}`;
-          weatherText.innerText = `현재 날씨: ${label}, ${temp}°C`;
-          
-          showToast("날씨 정보가 업데이트되었습니다.");
-        } catch (error) { showToast("날씨 정보를 불러오는데 실패했습니다."); }
-      }, () => { showToast("위치 권한을 허용해주시면 더 정확한 추천이 가능합니다."); }, { timeout: 10000 });
-    }
-
-    function startRecommendation() {
-      const btn = document.getElementById("recommendBtn");
-      const resultCard = document.getElementById("resultCard");
-      const loader = document.getElementById("loadingContainer");
-
-      btn.disabled = true; resultCard.style.display = "none"; loader.style.display = "block";
-
-      setTimeout(() => {
-        loader.style.display = "none"; btn.disabled = false;
-        recommendMenu();
-      }, 1200); 
-    }
-
-    function excludeAndRecommend() {
-      if (currentMenu && !excludedMenus.includes(currentMenu)) {
-        excludedMenus.push(currentMenu);
-        localStorage.setItem('excludedMenus', JSON.stringify(excludedMenus));
-        showToast(`'${currentMenu}' 메뉴가 제외 목록에 추가되었습니다.`);
-      }
-      startRecommendation();
-    }
-
-    function clearData() {
-      if(confirm("모든 추천 기록과 제외 목록을 초기화하시겠습니까?")) {
-        historyMenus = []; excludedMenus = [];
-        localStorage.removeItem('historyMenus'); localStorage.removeItem('excludedMenus');
-        updateHistoryUI(); showToast("데이터가 초기화되었습니다.");
-      }
-    }
-
-    function updateHistoryUI() {
-      const historyBox = document.getElementById("historyBox");
-      const historyList = document.getElementById("historyList");
-      
-      if (historyMenus.length > 0 || excludedMenus.length > 0) {
-        historyBox.style.display = "block"; historyList.innerHTML = "";
-        
-        historyMenus.forEach(menu => {
-          const li = document.createElement("li"); li.className = "history-item"; li.innerText = menu;
-          historyList.appendChild(li);
-        });
-
-        excludedMenus.forEach(menu => {
-          const li = document.createElement("li"); li.className = "history-item excluded"; li.innerText = `${menu} (제외됨)`;
-          historyList.appendChild(li);
-        });
-      } else { historyBox.style.display = "none"; }
-    }
-
-    // 결과 출력 시 이미지 관련 코드 제거됨
-    function recommendMenu() {
-      const mood = document.getElementById("mood").value;
-      const type = document.getElementById("type").value;
-      const spice = document.getElementById("spice").value;
-      const companion = document.getElementById("companion").value;
-      const budget = document.getElementById("budget").value;
-
-      let selectedType = type === "랜덤" ? ["한식", "양식", "일식", "중식", "아시안", "분식"][Math.floor(Math.random() * 6)] : type;
-      let candidateMenus = [...baseMenus[selectedType][mood]];
-
-      if (weatherState.loaded) {
-        if (weatherState.isRainy) candidateMenus = candidateMenus.concat(weatherMenus.rainy);
-        if (weatherState.isHot) candidateMenus = candidateMenus.concat(weatherMenus.hot);
-        if (weatherState.isCold) candidateMenus = candidateMenus.concat(weatherMenus.cold);
-      }
-
-      if (spice === "맵부심" || spice === "적당히") {
-        candidateMenus = candidateMenus.concat(["마라탕", "매운 짬뽕", "매운 라멘", "쭈꾸미볶음", "매운 떡볶이", "마라샹궈"]);
-      } else if (spice === "맵찔이") {
-        candidateMenus = candidateMenus.filter(menu => !["마라", "짬뽕", "매운", "쭈꾸미", "불닭"].some(w => menu.includes(w)));
-      }
-
-      if (companion === "혼밥") {
-        candidateMenus = candidateMenus.concat(candidateMenus.filter(m => ["덮밥", "국밥", "우동", "포케", "볶음밥", "김밥", "버거"].some(w => m.includes(w))));
-      } else if (companion === "동료와") {
-        candidateMenus = candidateMenus.concat(["페퍼로니 피자", "닭갈비", "부대찌개", "전골", "볶음밥", "떡볶이"]);
-      } else if (companion === "법카") {
-        candidateMenus = candidateMenus.concat(["스시 세트", "안심 스테이크", "장어구이 정식", "북경오리", "소고기구이"]);
-      } else if (companion === "바쁨") { 
-        const fastFood = ["햄버거 세트", "서브웨이", "삼각김밥", "도시락", "컵라면", "토스트", "단백질 바"];
-        candidateMenus = candidateMenus.concat(fastFood);
-      }
-
-      if (budget === "가성비") {
-        const cheapList = ["비빔밥", "칼국수", "컵라면", "잔치국수", "김치찌개", "떡볶이", "샌드위치", "짜장면", "볶음밥", "우동", "삼각김밥", "도시락", "햄버거"];
-        const filtered = candidateMenus.filter(m => cheapList.some(c => m.includes(c)));
-        if (filtered.length > 0) candidateMenus = filtered; 
-      } else if (budget === "플렉스") {
-        const flexList = ["안심 스테이크", "장어구이 정식", "스시 세트", "관자 리조또", "트러플 파스타", "유산슬", "북경오리", "스끼야끼", "카이센동", "푸팟퐁커리"];
-        candidateMenus = candidateMenus.concat(flexList);
-      }
-
-      candidateMenus = candidateMenus.filter(m => !excludedMenus.includes(m));
-      if (candidateMenus.length === 0) {
-        candidateMenus = ["제육볶음", "국밥", "짜장면", "돈까스"]; 
-        excludedMenus = []; localStorage.removeItem('excludedMenus');
-        showToast("제외된 메뉴가 너무 많아 목록이 초기화되었습니다.");
-      }
-
-      currentMenu = candidateMenus[Math.floor(Math.random() * candidateMenus.length)];
-
-      historyMenus.unshift(currentMenu);
-      if (historyMenus.length > 4) historyMenus.pop(); 
-      localStorage.setItem('historyMenus', JSON.stringify(historyMenus));
-      updateHistoryUI();
-
-      // JY 정체성 코멘트 추가
-      document.getElementById("resultTitle").innerText = `JY가 픽한 메뉴: [${currentMenu}]`;
-      
-      let explainText = `🤖 AI의 추천 이유:\n`;
-      if (weatherState.loaded) explainText += `현재 ${weatherState.weatherLabel} 날씨를 반영하고, `;
-      if (budget === "가성비") explainText += `가성비 좋은 식사 조건을 고려하여 `;
-      else if (budget === "플렉스") explainText += `특별한 한 끼를 위한 메뉴로 `;
-      
-      if (companion === "바쁨") explainText += `빠르게 드실 수 있는 메뉴를 선택했습니다.`;
-      else if (mood === "개운") explainText += `기력 보충에 도움이 되는 요리입니다.`;
-      else explainText += `입맛을 돋워줄 ${selectedType} 요리를 선택했습니다.`;
-      
-      document.getElementById("resultReason").innerText = explainText;
-
-      const tags = [];
-      tags.push(selectedType);
-      if (spice !== "상관없음") tags.push(spice === "맵찔이" ? "순한맛" : spice === "적당히" ? "적당히 매콤하게" : "아주 맵게");
-      if (weatherState.loaded) tags.push(`${weatherState.weatherLabel}`);
-      if (companion === "법카") tags.push("법인카드");
-      if (companion === "바쁨") tags.push("빠른 식사");
-      if (budget !== "적당히") tags.push(budget === "가성비" ? "가성비" : "고급스럽게");
-      
-      const tagsContainer = document.getElementById("resultTags");
-      tagsContainer.innerHTML = tags.map(t => `<span class="tag">#${t}</span>`).join("");
-
-      const loc = weatherState.city && weatherState.city !== "현재 위치" ? weatherState.city : "";
-      document.getElementById("mapsLink").href = `https://map.kakao.com/link/search/${loc} ${currentMenu} 맛집`;
-
-      const resultCard = document.getElementById("resultCard");
-      resultCard.style.display = "block";
-      resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-    function shareResult() {
-      if (!currentMenu) return;
-      const shareText = `🍽️ JY가 추천하는 오늘의 점심!\n\n👉 추천 메뉴: ${currentMenu}\n\n날씨와 상황을 종합적으로 고려한 AI 추천 결과입니다. 함께 드시러 갈까요?`;
-      if (navigator.share) {
-        navigator.share({ title: '오늘 점심 추천', text: shareText }).catch(() => showToast("공유하기가 취소되었습니다."));
-      } else {
-        navigator.clipboard.writeText(shareText).then(() => { showToast("메뉴 추천 결과가 클립보드에 복사되었습니다."); });
-      }
-    }
-
-    window.addEventListener("load", () => {
-      if (localStorage.getItem("theme") === "dark") {
-        document.body.setAttribute("data-theme", "dark");
-        document.getElementById("themeToggle").innerText = "🌙";
-      }
-      updateHistoryUI(); loadWeather();
-    });
-  </script>
-</body>
-</html>
+        당떨어짐: ["돈까스", "텐동", "가츠동", "
