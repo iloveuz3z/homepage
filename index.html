@@ -5,129 +5,197 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>오늘 점심 뭐 먹지?</title>
   <style>
+    /* CSS 변수를 활용한 다크모드 지원 설정 */
+    :root {
+      --bg-top: #fffaf5;
+      --bg-bot: #fff3e8;
+      --card-bg: #ffffff;
+      --text-main: #2f2f2f;
+      --text-sub: #6c6c6c;
+      --border-color: #f0e5da;
+      --weather-bg: #fff7f0;
+      --weather-border: #f4dfcf;
+      --input-bg: #ffffff;
+      --input-border: #d8d8d8;
+      --result-bg: #fffdfb;
+      --tag-bg: #fff0e9;
+      --tag-text: #a6583a;
+      --reason-bg: #f9f5f0;
+      --btn-primary: #ff8a65;
+      --btn-primary-hover: #f07b56;
+      --shadow: rgba(0,0,0,0.06);
+    }
+
+    [data-theme="dark"] {
+      --bg-top: #1a1a1a;
+      --bg-bot: #121212;
+      --card-bg: #242424;
+      --text-main: #e0e0e0;
+      --text-sub: #a0a0a0;
+      --border-color: #333333;
+      --weather-bg: #2f2f2f;
+      --weather-border: #444444;
+      --input-bg: #333333;
+      --input-border: #555555;
+      --result-bg: #2a2a2a;
+      --tag-bg: #3d2a23;
+      --tag-text: #ffa280;
+      --reason-bg: #1f1f1f;
+      --shadow: rgba(0,0,0,0.3);
+    }
+
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(180deg, #fffaf5 0%, #fff3e8 100%);
-      color: #2f2f2f;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bot) 100%);
+      color: var(--text-main);
+      transition: background 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
     }
+    
+    .header-nav {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 16px 20px 0;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      width: 44px;
+      transition: background 0.2s;
+      color: var(--text-main);
+    }
+    .theme-toggle:hover { background: rgba(128,128,128,0.1); }
+
     .container {
       max-width: 860px;
-      margin: 48px auto;
-      padding: 20px;
+      margin: 20px auto 48px;
+      padding: 0 20px;
     }
     .card {
-      background: #ffffff;
-      border: 1px solid #f0e5da;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
       border-radius: 20px;
       padding: 28px;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+      box-shadow: 0 10px 24px var(--shadow);
+      transition: all 0.3s ease;
     }
-    h1 {
-      margin: 0 0 8px;
-      font-size: 34px;
-      text-align: center;
-    }
+    h1 { margin: 0 0 8px; font-size: 34px; text-align: center; }
     .subtitle {
       text-align: center;
-      color: #6c6c6c;
+      color: var(--text-sub);
       margin-bottom: 24px;
       line-height: 1.5;
     }
-    .subtitle strong {
-      color: #ff8a65;
-      font-size: 1.1em;
-    }
+    .subtitle strong { color: var(--btn-primary); font-size: 1.1em; }
+    
     .weather-box {
-      background: #fff7f0;
-      border: 1px solid #f4dfcf;
+      background: var(--weather-bg);
+      border: 1px solid var(--weather-border);
       border-radius: 16px;
       padding: 16px;
       margin-bottom: 20px;
       transition: all 0.3s ease;
     }
-    .weather-line {
-      margin: 6px 0;
-      color: #5b5b5b;
-      font-weight: 500;
-    }
+    .weather-line { margin: 6px 0; font-weight: 500; }
+    
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
       margin-top: 18px;
     }
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 700;
-      font-size: 14px;
-    }
+    label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 14px; }
     select, button {
       width: 100%;
       padding: 12px 14px;
       border-radius: 12px;
-      border: 1px solid #d8d8d8;
+      border: 1px solid var(--input-border);
       font-size: 16px;
-      background: white;
+      background: var(--input-bg);
+      color: var(--text-main);
+      transition: all 0.2s ease;
     }
     button {
       border: none;
-      background: #ff8a65;
+      background: var(--btn-primary);
       color: white;
       font-weight: 700;
       cursor: pointer;
-      transition: 0.2s ease;
     }
-    button:hover { opacity: 0.92; transform: translateY(-1px); }
-    .secondary-btn {
-      background: #6c8cff;
+    button:hover:not(:disabled) { opacity: 0.92; transform: translateY(-1px); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .secondary-btn { background: #6c8cff; }
+    
+    /* 로딩 애니메이션 영역 */
+    .loading-container {
+      display: none;
+      text-align: center;
+      padding: 40px 0;
+      margin-top: 22px;
     }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 138, 101, 0.3);
+      border-top-color: var(--btn-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     /* 결과 카드 스타일 */
     .result-card {
       margin-top: 22px;
       padding: 22px;
       border-radius: 18px;
-      background: #fffdfb;
-      border: 1px solid #efe6dc;
+      background: var(--result-bg);
+      border: 1px solid var(--border-color);
       display: none;
       text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: slideUp 0.5s forwards;
     }
+    @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+
     .result-title {
       font-size: 26px;
       font-weight: 800;
       margin-bottom: 12px;
       color: #d84315;
     }
-    
-    /* 메뉴 이미지 스타일 추가 */
     .result-image-container {
       width: 100%;
       height: 220px;
       border-radius: 12px;
       overflow: hidden;
       margin-bottom: 16px;
-      background: #f0f0f0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      display: none; /* 초기에는 숨김 */
+      background: var(--border-color);
+      display: none;
     }
     .result-image-container img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* 이미지가 찌그러지지 않게 꽉 채움 */
+      object-fit: cover;
       transition: transform 0.3s ease;
     }
-    .result-image-container img:hover {
-      transform: scale(1.05);
-    }
+    .result-image-container img:hover { transform: scale(1.05); }
 
     .result-sub {
-      color: #555;
+      color: var(--text-sub);
       margin-bottom: 18px;
       font-size: 15px;
       line-height: 1.4;
-      background: #f9f5f0;
+      background: var(--reason-bg);
       padding: 10px;
       border-radius: 8px;
     }
@@ -139,90 +207,71 @@
       margin-bottom: 20px;
     }
     .tag {
-      background: #fff0e9;
-      color: #a6583a;
+      background: var(--tag-bg);
+      color: var(--tag-text);
       border-radius: 999px;
       padding: 8px 12px;
       font-size: 13px;
       font-weight: 700;
     }
+
     /* 상호작용 버튼 영역 */
-    .action-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .action-row {
-      display: flex;
-      gap: 10px;
-    }
+    .action-group { display: flex; flex-direction: column; gap: 10px; }
+    .action-row { display: flex; gap: 10px; }
     .maps-btn {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      background: #4285F4;
-      color: white;
-      text-decoration: none;
-      font-weight: 700;
-      transition: 0.2s ease;
+      display: block; width: 100%; padding: 14px; border-radius: 12px;
+      background: #fee500; color: #191919; text-decoration: none;
+      font-weight: 800; transition: 0.2s ease;
     }
-    .maps-btn:hover { background: #3367d6; transform: translateY(-1px); }
-    .retry-btn { background: #f0f0f0; color: #333; border: 1px solid #ccc; }
+    .maps-btn:hover { background: #ecd400; transform: translateY(-1px); }
+    .share-btn { background: #4caf50; color: white; border: none; }
+    .retry-btn { background: var(--input-bg); color: var(--text-main); border: 1px solid var(--input-border); }
     .exclude-btn { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+    [data-theme="dark"] .exclude-btn { background: #4a1c1c; color: #ff8a8a; border: 1px solid #662222; }
     
     /* 추천 히스토리 영역 */
     .history-box {
-      margin-top: 24px;
-      padding: 16px;
-      background: #fafafa;
-      border-radius: 12px;
-      border: 1px dashed #dcdcdc;
-      display: none;
+      margin-top: 24px; padding: 16px; background: var(--weather-bg);
+      border-radius: 12px; border: 1px dashed var(--border-color); display: none;
     }
     .history-box h3 {
-      margin: 0 0 10px;
-      font-size: 15px;
-      color: #666;
-      text-align: center;
+      margin: 0 0 10px; font-size: 15px; color: var(--text-sub); text-align: center;
+      display: flex; justify-content: space-between; align-items: center;
     }
+    .clear-history {
+      font-size: 12px; color: #888; cursor: pointer; background: none; 
+      border: none; padding: 4px 8px; width: auto; font-weight: normal;
+    }
+    .clear-history:hover { text-decoration: underline; background: none; color: #555; transform: none;}
     .history-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      flex-wrap: wrap;
+      list-style: none; padding: 0; margin: 0; display: flex; gap: 8px;
+      justify-content: center; flex-wrap: wrap;
     }
     .history-item {
-      background: white;
-      border: 1px solid #eee;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 13px;
-      color: #777;
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      padding: 6px 12px; border-radius: 20px; font-size: 13px; color: var(--text-sub);
     }
-    .history-item:first-child {
-      border-color: #ff8a65;
-      color: #ff8a65;
-      font-weight: bold;
+    .history-item.excluded { text-decoration: line-through; opacity: 0.6; }
+
+    /* 토스트 알림 */
+    #toast {
+      visibility: hidden; min-width: 250px; background-color: #333; color: #fff;
+      text-align: center; border-radius: 8px; padding: 16px; position: fixed;
+      z-index: 1000; left: 50%; bottom: 30px; transform: translateX(-50%);
+      font-size: 14px; opacity: 0; transition: opacity 0.3s, bottom 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    
-    .footer-note {
-      margin-top: 18px;
-      text-align: center;
-      color: #777;
-      font-size: 13px;
-    }
+    #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+
     @media (max-width: 700px) {
       .grid, .action-row { grid-template-columns: 1fr; flex-direction: column; }
-      .container { margin: 24px auto; }
-      h1 { font-size: 28px; }
     }
   </style>
 </head>
 <body>
+  <div class="header-nav">
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="다크/라이트 모드 변경">☀️</button>
+  </div>
+
   <div class="container">
     <div class="card">
       <h1>🍽️ 오늘 점심 뭐 먹지?</h1>
@@ -275,7 +324,12 @@
           </select>
         </div>
         <button class="secondary-btn" onclick="loadWeather()" type="button">현재 위치/날씨 불러오기</button>
-        <button onclick="recommendMenu()" type="button">추천받기</button>
+        <button id="recommendBtn" onclick="startRecommendation()" type="button">추천받기</button>
+      </div>
+
+      <div class="loading-container" id="loadingContainer">
+        <div class="spinner"></div>
+        <div id="loadingText" style="color: var(--text-sub); font-weight: 500;">AI가 맞춤 메뉴를 분석 중입니다... 🔍</div>
       </div>
 
       <div class="result-card" id="resultCard">
@@ -289,34 +343,53 @@
         <div class="result-sub" id="resultReason"></div>
         
         <div class="action-group">
-          <a href="#" id="mapsLink" target="_blank" class="maps-btn">🗺️ 구글맵에서 내 근처 맛집 찾기</a>
+          <a href="#" id="mapsLink" target="_blank" class="maps-btn">📍 카카오맵에서 내 주변 맛집 찾기</a>
+          <button onclick="shareResult()" class="share-btn">🚀 동료에게 추천 결과 공유하기</button>
           <div class="action-row">
-            <button onclick="recommendMenu()" class="retry-btn">🔄 다시 추천받기</button>
-            <button onclick="excludeAndRecommend()" class="exclude-btn">🚫 이 메뉴 제외하고 다시</button>
+            <button onclick="startRecommendation()" class="retry-btn">🔄 다시 추천받기</button>
+            <button onclick="excludeAndRecommend()" class="exclude-btn">🚫 이 메뉴 제외하기</button>
           </div>
         </div>
       </div>
 
       <div class="history-box" id="historyBox">
-        <h3>🕒 오늘의 추천 히스토리 (Recent Picks)</h3>
+        <h3>
+          <span>🕒 나의 추천 기록</span>
+          <button class="clear-history" onclick="clearData()">데이터 초기화</button>
+        </h3>
         <ul class="history-list" id="historyList"></ul>
       </div>
 
-      <div class="footer-note">
-        위치 권한을 허용하면 현재 날씨를 반영해 더 세분화된 추천을 받을 수 있어요.
-      </div>
     </div>
   </div>
 
+  <div id="toast"></div>
+
   <script>
+    // --- 1. 테마(다크모드) 관리 ---
+    function toggleTheme() {
+      const body = document.body;
+      const toggleBtn = document.getElementById("themeToggle");
+      if (body.getAttribute("data-theme") === "dark") {
+        body.removeAttribute("data-theme");
+        toggleBtn.innerText = "☀️";
+        localStorage.setItem("theme", "light");
+      } else {
+        body.setAttribute("data-theme", "dark");
+        toggleBtn.innerText = "🌙";
+        localStorage.setItem("theme", "dark");
+      }
+    }
+
+    // --- 2. 상태 및 로컬 스토리지 관리 ---
     let weatherState = {
-      loaded: false, latitude: null, longitude: null, city: null,
-      temperature: null, weatherCode: null, weatherLabel: null,
+      loaded: false, city: null, temperature: null, weatherLabel: null,
       isRainy: false, isHot: false, isCold: false
     };
 
-    let excludedMenus = [];
-    let historyMenus = [];
+    // 로컬 스토리지에서 데이터 불러오기 (영구 저장)
+    let excludedMenus = JSON.parse(localStorage.getItem('excludedMenus')) || [];
+    let historyMenus = JSON.parse(localStorage.getItem('historyMenus')) || [];
     let currentMenu = "";
 
     const weatherCodeMap = {
@@ -329,43 +402,41 @@
 
     const baseMenus = {
       한식: {
-        든든: ["제육볶음", "김치찌개", "순두부찌개", "돼지국밥"],
+        든든: ["제육볶음", "김치찌개", "순두부찌개", "돼지국밥", "감자탕"],
         가볍게: ["비빔밥", "칼국수", "콩나물국밥", "잔치국수"],
-        스트레스: ["쭈꾸미볶음", "부대찌개", "매운 갈비찜", "닭갈비"],
-        건강: ["쌈밥", "된장찌개", "닭곰탕", "보리비빔밥"],
-        기분전환: ["냉면", "돌솥비빔밥", "불고기덮밥", "떡볶이 정식"]
+        스트레스: ["쭈꾸미볶음", "부대찌개", "매운 갈비찜", "닭갈비", "낙지볶음"],
+        건강: ["쌈밥", "된장찌개", "닭곰탕", "보리비빔밥", "설렁탕"],
+        기분전환: ["냉면", "돌솥비빔밥", "불고기덮밥", "떡볶이"]
       },
       양식: {
-        든든: ["파스타", "리조또", "햄버거", "스테이크 덮밥"],
+        든든: ["파스타", "리조또", "수제버거", "스테이크 덮밥", "돈마호크"],
         가볍게: ["샌드위치", "스프와 빵", "브런치 플레이트", "포케볼"],
-        스트레스: ["매운 크림파스타", "피자", "치즈버거", "라자냐"],
+        스트레스: ["매운 크림파스타", "피자", "더블 치즈버거", "라자냐"],
         건강: ["샐러드볼", "그릴드 치킨 샐러드", "연어 포케", "아보카도 볼"],
-        기분전환: ["트러플 파스타", "버섯리조또", "오믈렛 브런치", "포카치아 샌드위치"]
+        기분전환: ["트러플 파스타", "버섯리조또", "에그 베네딕트", "잠봉뵈르"]
       },
       일식: {
-        든든: ["돈까스", "규동", "우동 세트", "가츠동"],
+        든든: ["돈까스", "규동", "우동 정식", "가츠동", "텐동"],
         가볍게: ["소바", "초밥", "연어덮밥", "냉모밀"],
         스트레스: ["매운 라멘", "가라아게 카레", "탄탄멘", "매운 규동"],
-        건강: ["사시미 덮밥", "메밀소바", "연어 샐러드", "두부 샐러드"],
-        기분전환: ["스시 세트", "오야꼬동", "나베", "규카츠"]
+        건강: ["사시미 덮밥", "메밀소바", "연어 샐러드", "낫또 덮밥"],
+        기분전환: ["스시 오마카세", "오야꼬동", "스키야키", "규카츠"]
       },
       중식: {
-        든든: ["짜장면", "짬뽕밥", "마파두부 덮밥", "유산슬밥"],
+        든든: ["짜장면", "짬뽕밥", "마파두부 덮밥", "유산슬밥", "볶음밥"],
         가볍게: ["계란볶음밥", "완탕면", "야채볶음면", "온면"],
         스트레스: ["마라탕", "짬뽕", "마라샹궈", "고추잡채밥"],
-        건강: ["야채죽", "두부볶음덮밥", "청경채볶음면", "계란탕"],
-        기분전환: ["유린기", "멘보샤 세트", "탄탄면", "볶음짬뽕"]
+        건강: ["야채죽", "두부볶음덮밥", "청경채볶음면", "토마토계란볶음"],
+        기분전환: ["유린기", "멘보샤 세트", "탄탄면", "크림새우"]
       }
     };
 
     const weatherMenus = {
-      rainy: ["칼국수", "우동", "짬뽕", "국밥", "수제비", "나베"],
+      rainy: ["칼국수", "우동", "짬뽕", "국밥", "수제비", "나베", "마라탕"],
       hot: ["냉면", "메밀소바", "초밥", "포케", "샐러드볼", "냉모밀"],
-      cold: ["찌개", "국밥", "라멘", "탕", "전골", "카레"]
+      cold: ["찌개", "국밥", "라멘", "탕", "전골", "카레", "감자탕"]
     };
 
-    // [신규 기능] 대표 메뉴들에 대한 고해상도 무료 이미지(Unsplash) 매핑
-    // 여기에 없는 메뉴는 defaultFoodImage가 출력됩니다.
     const menuImages = {
       "제육볶음": "https://images.unsplash.com/photo-1580651315530-69c8e0026377?w=600&h=400&fit=crop",
       "비빔밥": "https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=600&h=400&fit=crop",
@@ -375,117 +446,136 @@
       "샐러드볼": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop",
       "돈까스": "https://images.unsplash.com/photo-1595295333158-4742f28fbd85?w=600&h=400&fit=crop",
       "피자": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&h=400&fit=crop",
-      "햄버거": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=400&fit=crop",
+      "수제버거": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=400&fit=crop",
       "샌드위치": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&h=400&fit=crop",
-      "냉면": "https://images.unsplash.com/photo-1634500055271-4770e060c5fa?w=600&h=400&fit=crop", // 면 요리 느낌
-      "우동": "https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=600&h=400&fit=crop",
+      "냉면": "https://images.unsplash.com/photo-1634500055271-4770e060c5fa?w=600&h=400&fit=crop", 
+      "우동 정식": "https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=600&h=400&fit=crop",
       "포케볼": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=400&fit=crop",
-      "초밥": "https://images.unsplash.com/photo-1553621042-f6e147245754?w=600&h=400&fit=crop",
-      "라멘": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&h=400&fit=crop",
-      "스테이크 덮밥": "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600&h=400&fit=crop"
+      "라멘": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&h=400&fit=crop"
     };
-
-    // 매핑되지 않은 메뉴가 나왔을 때 보여줄 기본(Fallback) 맛있는 음식 이미지
     const defaultFoodImage = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop";
 
+    // --- 3. UI 보조 함수 ---
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.innerText = message;
+      toast.className = "show";
+      setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+    }
+
+    // --- 4. 핵심 기능 ---
     async function loadWeather() {
       const locationText = document.getElementById("locationText");
       const weatherText = document.getElementById("weatherText");
       const weatherGuide = document.getElementById("weatherGuide");
-      const weatherContainer = document.getElementById("weatherContainer");
-
+      
       if (!navigator.geolocation) {
-        locationText.innerText = "📍 위치: 이 브라우저에서는 위치 기능을 지원하지 않아요.";
+        showToast("브라우저가 위치 기능을 지원하지 않습니다.");
         return;
       }
-
-      locationText.innerText = "📍 위치: 현재 위치를 확인 중입니다...";
-      weatherText.innerText = "🌤️ 날씨: 날씨를 조회 중입니다...";
-      weatherGuide.innerText = "💡 잠시만 기다려주세요";
+      locationText.innerText = "📍 위치: 확인 중...";
+      weatherText.innerText = "🌤️ 날씨: 조회 중...";
 
       navigator.geolocation.getCurrentPosition(async (position) => {
         try {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          weatherState.latitude = lat;
-          weatherState.longitude = lon;
-
+          const lat = position.coords.latitude; const lon = position.coords.longitude;
           const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`;
-          const weatherRes = await fetch(weatherUrl);
-          const weatherData = await weatherRes.json();
+          const weatherData = await (await fetch(weatherUrl)).json();
           
-          const current = weatherData.current;
-          const temp = current.temperature_2m;
-          const code = current.weather_code;
+          const temp = weatherData.current.temperature_2m;
+          const code = weatherData.current.weather_code;
           const label = weatherCodeMap[code] || "확인 필요";
 
           let city = "현재 위치";
           try {
-            const geoUrl = `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=ko`;
-            const geoRes = await fetch(geoUrl);
-            const geoData = await geoRes.json();
-            if (geoData.results && geoData.results.length > 0) {
-              const place = geoData.results[0];
-              city = place.city || place.name || place.admin2 || place.admin1 || "현재 위치";
-            }
-          } catch (e) { city = "현재 위치"; }
+            const geoData = await (await fetch(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=ko`)).json();
+            if (geoData.results?.length > 0) city = geoData.results[0].city || geoData.results[0].name || "현재 위치";
+          } catch (e) {}
 
-          weatherState.loaded = true;
-          weatherState.city = city;
-          weatherState.temperature = temp;
-          weatherState.weatherCode = code;
-          weatherState.weatherLabel = label;
-          weatherState.isRainy = [51,53,55,61,63,65,80,81,82,95].includes(code);
-          weatherState.isHot = temp >= 27;
-          weatherState.isCold = temp <= 8;
+          weatherState = {
+            loaded: true, city, temperature: temp, weatherLabel: label,
+            isRainy: [51,53,55,61,63,65,71,73,75,80,81,82,95].includes(code),
+            isHot: temp >= 27, isCold: temp <= 8
+          };
 
           locationText.innerText = `📍 위치: ${city}`;
           weatherText.innerText = `🌡️ 날씨: ${label}, ${temp}°C`;
 
-          let guide = "💡 오늘 날씨에 딱 맞는 메뉴를 찾아드릴게요!";
-          weatherContainer.style.background = "#fff7f0"; 
-          if (weatherState.isRainy) {
-            guide = "☔ 비가 오네요! 따뜻한 국물 요리에 가중치를 둘게요.";
-            weatherContainer.style.background = "#f0f8ff"; 
-          } else if (weatherState.isHot) {
-            guide = "🧊 날씨가 덥네요! 시원하고 가벼운 메뉴를 더 반영할게요.";
-            weatherContainer.style.background = "#fff0f5";
-          } else if (weatherState.isCold) {
-            guide = "🍲 날씨가 춥네요! 몸을 녹여줄 든든한 메뉴를 더 반영할게요.";
-            weatherContainer.style.background = "#fdf5e6";
-          }
-          weatherGuide.innerText = guide;
+          if (weatherState.isRainy) weatherGuide.innerText = "☔ 비가 오네요! 따뜻한 국물 요리 위주로 추천할게요.";
+          else if (weatherState.isHot) weatherGuide.innerText = "🧊 덥네요! 시원하고 산뜻한 메뉴 위주로 추천할게요.";
+          else if (weatherState.isCold) weatherGuide.innerText = "🍲 춥네요! 몸을 녹여줄 든든한 메뉴 위주로 추천할게요.";
+          else weatherGuide.innerText = "💡 오늘 날씨에 딱 맞는 메뉴를 찾아드릴게요!";
+          
+          showToast("날씨 정보를 성공적으로 불러왔습니다!");
         } catch (error) {
-          locationText.innerText = "📍 위치: 위치는 가져왔지만 날씨 조회 중 오류가 발생했어요.";
-          weatherText.innerText = "🌤️ 날씨: 다시 시도해주세요.";
-          weatherGuide.innerText = "💡 날씨 없이 추천을 진행할게요.";
+          showToast("날씨 정보를 가져오는데 실패했습니다.");
         }
-      }, (error) => {
-        locationText.innerText = "📍 위치: 위치 권한이 없어서 기본 추천으로 진행할게요.";
-        weatherText.innerText = "🌤️ 날씨: 위치 허용 시 날씨 반영 가능";
-        weatherGuide.innerText = "💡 현재는 사용자의 기분과 취향만 반영됩니다.";
-      }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 });
+      }, () => { showToast("위치 권한을 허용해주세요."); }, { timeout: 10000 });
+    }
+
+    // 로딩 스피너 애니메이션 후 결과 출력
+    function startRecommendation() {
+      const btn = document.getElementById("recommendBtn");
+      const resultCard = document.getElementById("resultCard");
+      const loader = document.getElementById("loadingContainer");
+
+      btn.disabled = true;
+      resultCard.style.display = "none";
+      loader.style.display = "block";
+
+      // 룰렛/계산하는 느낌을 주기 위해 1.2초 대기
+      setTimeout(() => {
+        loader.style.display = "none";
+        btn.disabled = false;
+        recommendMenu();
+      }, 1200);
     }
 
     function excludeAndRecommend() {
       if (currentMenu && !excludedMenus.includes(currentMenu)) {
         excludedMenus.push(currentMenu);
+        localStorage.setItem('excludedMenus', JSON.stringify(excludedMenus));
+        showToast(`🚫 '${currentMenu}' 메뉴를 추천에서 제외했습니다.`);
       }
-      recommendMenu();
+      startRecommendation();
+    }
+
+    function clearData() {
+      if(confirm("추천 기록과 제외된 메뉴를 모두 초기화하시겠습니까?")) {
+        historyMenus = [];
+        excludedMenus = [];
+        localStorage.removeItem('historyMenus');
+        localStorage.removeItem('excludedMenus');
+        updateHistoryUI();
+        showToast("데이터가 초기화되었습니다.");
+      }
     }
 
     function updateHistoryUI() {
       const historyBox = document.getElementById("historyBox");
       const historyList = document.getElementById("historyList");
-      if (historyMenus.length > 0) {
+      
+      if (historyMenus.length > 0 || excludedMenus.length > 0) {
         historyBox.style.display = "block";
         historyList.innerHTML = "";
+        
+        // 추천 기록 렌더링
         historyMenus.forEach(menu => {
           const li = document.createElement("li");
           li.className = "history-item";
           li.innerText = menu;
           historyList.appendChild(li);
         });
+
+        // 제외된 메뉴 렌더링
+        excludedMenus.forEach(menu => {
+          const li = document.createElement("li");
+          li.className = "history-item excluded";
+          li.innerText = `${menu} (제외됨)`;
+          historyList.appendChild(li);
+        });
+      } else {
+        historyBox.style.display = "none";
       }
     }
 
@@ -495,12 +585,7 @@
       const spice = document.getElementById("spice").value;
       const companion = document.getElementById("companion").value;
 
-      let selectedType = type;
-      if (type === "랜덤") {
-        const types = ["한식", "양식", "일식", "중식"];
-        selectedType = types[Math.floor(Math.random() * types.length)];
-      }
-
+      let selectedType = type === "랜덤" ? ["한식", "양식", "일식", "중식"][Math.floor(Math.random() * 4)] : type;
       let candidateMenus = [...baseMenus[selectedType][mood]];
 
       if (weatherState.loaded) {
@@ -509,90 +594,82 @@
         if (weatherState.isCold) candidateMenus = candidateMenus.concat(weatherMenus.cold);
       }
 
-      if (spice === "좋아함") {
-        const spicyBoost = ["마라탕", "짬뽕", "매운 라멘", "쭈꾸미볶음", "닭갈비", "탄탄멘", "부대찌개"];
-        candidateMenus = candidateMenus.concat(spicyBoost);
-      } else if (spice === "안좋아함") {
-        candidateMenus = candidateMenus.filter(menu => {
-          const spicyWords = ["마라", "짬뽕", "매운", "쭈꾸미", "탄탄멘"];
-          return !spicyWords.some(word => menu.includes(word));
-        });
-      }
+      if (spice === "좋아함") candidateMenus = candidateMenus.concat(["마라탕", "짬뽕", "매운 라멘", "쭈꾸미볶음", "닭갈비", "탄탄멘"]);
+      else if (spice === "안좋아함") candidateMenus = candidateMenus.filter(menu => !["마라", "짬뽕", "매운", "쭈꾸미", "탄탄멘"].some(w => menu.includes(w)));
 
-      if (companion === "혼밥") {
-        const soloBoost = ["덮밥", "국밥", "우동", "소바", "포케", "샐러드볼", "볶음밥"];
-        candidateMenus = candidateMenus.concat(candidateMenus.filter(menu => soloBoost.some(word => menu.includes(word))));
-      } else if (companion === "동료와") {
-        candidateMenus = candidateMenus.concat(["피자", "닭갈비", "부대찌개", "전골", "유린기", "떡볶이 정식"]);
-      } else if (companion === "기분전환") {
-        candidateMenus = candidateMenus.concat(["브런치 플레이트", "포케볼", "초밥", "트러플 파스타", "냉면", "샌드위치"]);
-      }
+      if (companion === "혼밥") candidateMenus = candidateMenus.concat(candidateMenus.filter(m => ["덮밥", "국밥", "우동", "소바", "포케", "볶음밥"].some(w => m.includes(w))));
+      else if (companion === "동료와") candidateMenus = candidateMenus.concat(["피자", "닭갈비", "부대찌개", "전골", "유린기", "떡볶이"]);
 
+      // 제외 메뉴 필터링
       candidateMenus = candidateMenus.filter(m => !excludedMenus.includes(m));
-
       if (candidateMenus.length === 0) {
         candidateMenus = ["비빔밥", "파스타", "우동", "짜장면"];
-        excludedMenus = []; 
+        excludedMenus = []; localStorage.removeItem('excludedMenus');
+        showToast("제외된 메뉴가 너무 많아 목록이 초기화되었습니다.");
       }
 
-      const menu = candidateMenus[Math.floor(Math.random() * candidateMenus.length)];
-      currentMenu = menu; 
+      currentMenu = candidateMenus[Math.floor(Math.random() * candidateMenus.length)];
 
-      historyMenus.unshift(menu);
+      // 히스토리 업데이트 및 저장
+      historyMenus.unshift(currentMenu);
       if (historyMenus.length > 3) historyMenus.pop();
+      localStorage.setItem('historyMenus', JSON.stringify(historyMenus));
       updateHistoryUI();
 
-      const resultCard = document.getElementById("resultCard");
-      const resultTitle = document.getElementById("resultTitle");
-      const resultReason = document.getElementById("resultReason");
-      const resultTags = document.getElementById("resultTags");
-      const mapsLink = document.getElementById("mapsLink");
-      
-      // 이미지 관련 DOM 
-      const imgContainer = document.getElementById("resultImageContainer");
-      const imgElement = document.getElementById("resultImage");
+      // 화면 업데이트
+      document.getElementById("resultTitle").innerText = `오늘의 픽: ${currentMenu}!`;
+      document.getElementById("resultImage").src = menuImages[currentMenu] || defaultFoodImage;
+      document.getElementById("resultImageContainer").style.display = "block";
 
-      resultTitle.innerText = `오늘의 추천: ${menu}!`;
-
-      // 이미지 세팅 (미리 준비된 이미지가 없으면 기본 이미지 표시)
-      const imageUrl = menuImages[menu] || defaultFoodImage;
-      imgElement.src = imageUrl;
-      imgElement.alt = `${menu} 이미지`;
-      imgContainer.style.display = "block"; // 숨겨뒀던 이미지 박스 표시
-
-      let explainText = `🤖 AI 추천 코멘트: `;
-      if (weatherState.loaded) {
-        if (weatherState.isRainy) explainText += `비 오는 날씨 ☔ 에 어울리는 국물 요리를 우선 고려했고, `;
-        else if (weatherState.isHot) explainText += `더운 날씨 🧊 라서 시원하고 산뜻한 메뉴에 가중치를 주었고, `;
-        else if (weatherState.isCold) explainText += `추운 날씨 🍲 라 든든하고 따뜻한 요리를 더 반영했고, `;
-        else explainText += `현재 날씨(${weatherState.weatherLabel})를 기반으로, `;
-      }
-      explainText += `'${mood}' 기분에 맞는 ${selectedType} 음식을 찾아봤어요. `;
-      if (companion === "혼밥") explainText += `혼자서도 편하게 드실 수 있는 메뉴랍니다!`;
-      else if (companion === "동료와") explainText += `동료들과 함께 즐기기 좋은 메뉴예요!`;
-      
-      resultReason.innerText = explainText;
+      let explainText = `🤖 AI 분석: `;
+      if (weatherState.loaded) explainText += `현재 날씨(${weatherState.weatherLabel})를 기반으로, `;
+      explainText += `'${mood}' 기분에 맞는 ${selectedType} 요리를 찾았어요. `;
+      if (companion === "혼밥") explainText += `혼자 먹기 딱 좋은 메뉴랍니다!`;
+      else explainText += `같이 먹으면 더 맛있는 메뉴예요!`;
+      document.getElementById("resultReason").innerText = explainText;
 
       const tags = [mood, selectedType, companion];
       if (spice !== "상관없음") tags.push(`매운맛 ${spice}`);
-      if (weatherState.loaded) tags.push(`${weatherState.weatherLabel} ${weatherState.temperature}°C`);
+      if (weatherState.loaded) tags.push(`${weatherState.weatherLabel}`);
+      
+      const tagsContainer = document.getElementById("resultTags");
+      tagsContainer.innerHTML = tags.map(t => `<span class="tag">${t}</span>`).join("");
 
-      resultTags.innerHTML = "";
-      tags.forEach(tag => {
-        const span = document.createElement("span");
-        span.className = "tag";
-        span.innerText = tag;
-        resultTags.appendChild(span);
-      });
+      // 한국 유저를 위한 카카오맵 연동
+      const loc = weatherState.city && weatherState.city !== "현재 위치" ? weatherState.city : "";
+      document.getElementById("mapsLink").href = `https://map.kakao.com/link/search/${loc} ${currentMenu} 맛집`;
 
-      const searchLocation = weatherState.city && weatherState.city !== "현재 위치" ? weatherState.city : "근처";
-      mapsLink.href = `https://www.google.com/maps/search/$${searchLocation}+${menu}+맛집`;
-      mapsLink.innerText = `🗺️ 구글맵에서 '${searchLocation} ${menu}' 찾기`;
-
+      const resultCard = document.getElementById("resultCard");
       resultCard.style.display = "block";
+      
+      // 스무스 스크롤: 결과 창으로 부드럽게 이동
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
+    // 공유하기 (Web Share API)
+    function shareResult() {
+      if (!currentMenu) return;
+      const shareText = `🍽️ 오늘의 점심은 [${currentMenu}] 어때요?\n\n(내 기분과 날씨를 반영한 AI 추천 결과입니다!)`;
+      
+      if (navigator.share) {
+        navigator.share({ title: '점심 메뉴 추천', text: shareText })
+          .catch(() => showToast("공유하기가 취소되었습니다."));
+      } else {
+        // 지원하지 않는 경우 클립보드 복사
+        navigator.clipboard.writeText(shareText).then(() => {
+          showToast("클립보드에 결과가 복사되었습니다! 카톡 등에 붙여넣기 하세요.");
+        });
+      }
+    }
+
+    // 초기화 및 다크모드 적용
     window.addEventListener("load", () => {
+      // 저장된 테마 불러오기
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.setAttribute("data-theme", "dark");
+        document.getElementById("themeToggle").innerText = "🌙";
+      }
+      updateHistoryUI();
       loadWeather();
     });
   </script>
