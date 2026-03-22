@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>오늘 점심 뭐 먹지? | AI 맞춤 추천</title>
+  <title>JY의 오늘 점심 뭐 먹지? | AI 맞춤 추천</title>
   
-  <meta property="og:title" content="오늘 점심 뭐 먹지?">
+  <meta property="og:title" content="JY의 오늘 점심 뭐 먹지?">
   <meta property="og:description" content="날씨, 기분, 예산을 고려해 AI가 딱 맞는 점심 메뉴를 추천해 드립니다.">
   <meta property="og:image" content="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80">
   <meta property="og:type" content="website">
@@ -36,8 +36,9 @@
     .container { max-width: 860px; margin: 20px auto 48px; padding: 0 20px; flex: 1; width: 100%; }
     .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 28px; box-shadow: 0 10px 24px var(--shadow); transition: all 0.3s ease; }
     h1 { margin: 0 0 8px; font-size: 32px; text-align: center; font-weight: 800; letter-spacing: -0.5px; }
+    /* JY 정체성 강조 스타일 */
+    h1 span.author { color: var(--btn-primary); font-size: 0.9em; }
     .subtitle { text-align: center; color: var(--text-sub); margin-bottom: 24px; line-height: 1.6; font-size: 15px; }
-    .subtitle strong { color: var(--btn-primary); font-size: 1.1em; font-weight: 700; }
     .weather-box { background: var(--weather-bg); border: 1px solid var(--weather-border); border-radius: 16px; padding: 16px; margin-bottom: 24px; transition: all 0.3s ease; }
     .weather-line { margin: 6px 0; font-weight: 600; font-size: 14px; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
@@ -52,13 +53,12 @@
     .loading-container { display: none; text-align: center; padding: 40px 0; margin-top: 22px; }
     .spinner { width: 40px; height: 40px; border: 4px solid rgba(255, 107, 53, 0.2); border-top-color: var(--btn-primary); border-radius: 50%; animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite; margin: 0 auto 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .result-card { margin-top: 24px; padding: 24px; border-radius: 20px; background: var(--result-bg); border: 1px solid var(--border-color); display: none; text-align: center; opacity: 0; transform: translateY(20px); animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    
+    /* 결과 카드 스타일 (이미지 영역 제거로 간소화) */
+    .result-card { margin-top: 24px; padding: 24px; border-radius: 20px; background: var(--result-bg); border: 2px solid var(--border-color); display: none; text-align: center; opacity: 0; transform: translateY(20px); animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-    .result-title { font-size: 24px; font-weight: 800; margin-bottom: 16px; color: var(--btn-primary); word-break: keep-all; }
-    .result-image-container { width: 100%; height: 260px; border-radius: 16px; overflow: hidden; margin-bottom: 20px; background: var(--border-color); display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .result-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-    .result-image-container img:hover { transform: scale(1.03); }
-    .result-sub { color: var(--text-sub); margin-bottom: 20px; font-size: 15px; line-height: 1.5; background: var(--reason-bg); padding: 16px; border-radius: 12px; font-weight: 500; text-align: left; }
+    .result-title { font-size: 26px; font-weight: 800; margin-bottom: 20px; color: var(--btn-primary); word-break: keep-all; line-height: 1.3; }
+    .result-sub { color: var(--text-sub); margin-bottom: 20px; font-size: 15px; line-height: 1.6; background: var(--reason-bg); padding: 18px; border-radius: 12px; font-weight: 500; text-align: left; border: 1px solid var(--border-color); }
     .tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; }
     .tag { background: var(--tag-bg); color: var(--tag-text); border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 700; }
     .action-group { display: flex; flex-direction: column; gap: 10px; }
@@ -72,7 +72,7 @@
     [data-theme="dark"] .exclude-btn { background: #3d1c1c; color: #ff8a8a; border: 1px solid #5c2b2b; }
     
     /* 광고 영역 스타일 */
-    .ad-placeholder { margin-top: 24px; padding: 20px; background: var(--weather-bg); border-radius: 16px; border: 1px dashed #ccc; text-align: center; color: var(--text-sub); font-size: 13px; min-height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .ad-placeholder { margin-top: 28px; padding: 20px; background: var(--weather-bg); border-radius: 16px; border: 1px dashed #ccc; text-align: center; color: var(--text-sub); font-size: 13px; min-height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
     
     .history-box { margin-top: 32px; padding: 20px; background: var(--weather-bg); border-radius: 16px; border: 1px dashed var(--border-color); display: none; }
     .history-box h3 { margin: 0 0 14px; font-size: 15px; color: var(--text-main); text-align: center; display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
@@ -85,7 +85,7 @@
     #toast { visibility: hidden; min-width: 260px; background-color: rgba(33,33,33,0.9); color: #fff; text-align: center; border-radius: 10px; padding: 14px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px); font-size: 14px; font-weight: 500; opacity: 0; transition: all 0.3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.15); backdrop-filter: blur(4px); }
     #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
     
-    footer { text-align: center; padding: 20px; color: var(--text-sub); font-size: 12px; margin-top: auto; }
+    footer { text-align: center; padding: 25px; color: var(--text-sub); font-size: 13px; margin-top: auto; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.02); }
 
     @media (max-width: 700px) { .grid, .action-row { grid-template-columns: 1fr; flex-direction: column; } .result-title { font-size: 22px; } }
   </style>
@@ -97,10 +97,10 @@
 
   <div class="container">
     <div class="card">
-      <h1>오늘 점심 뭐 먹지?</h1>
+      <h1><span class="author">JY의</span> 오늘 점심 뭐 먹지?</h1>
       <div class="subtitle">
-        <strong>AI 맞춤형 점심 추천 서비스</strong><br>
-        날씨, 기분, 예산을 종합적으로 고려하여 메뉴를 제안해 드립니다.
+        AI 기반 맞춤형 점심 메뉴 추천 서비스<br>
+        날씨, 기분, 예산을 종합적으로 고려하여 JY가 제안하는 최적의 메뉴
       </div>
 
       <div class="weather-box" id="weatherContainer">
@@ -175,9 +175,6 @@
 
       <div class="result-card" id="resultCard">
         <div class="result-title" id="resultTitle"></div>
-        <div class="result-image-container" id="resultImageContainer">
-          <img id="resultImage" src="" alt="추천 메뉴 이미지" />
-        </div>
         <div class="tags" id="resultTags"></div>
         <div class="result-sub" id="resultReason"></div>
         
@@ -194,7 +191,7 @@
       <div class="ad-placeholder">
         <span>Google AdSense 광고 노출 영역</span>
         <span style="font-size: 11px; color: #999; margin-top: 4px;">(애드센스 승인 완료 후 여기에 광고 단위 코드를 삽입하세요)</span>
-        </div>
+      </div>
 
       <div class="history-box" id="historyBox">
         <h3>
@@ -208,12 +205,14 @@
   </div>
 
   <footer>
-    © 2024 Lunch Recommender. All rights reserved.
+    JY's Personal Project © 2024. All rights reserved.<br>
+    Powered by Open-Meteo API & Kakao Maps.
   </footer>
 
   <div id="toast"></div>
 
   <script>
+    // 테마 및 상태 관리 스크립트 (이미지 매핑 로직 제거됨)
     function toggleTheme() {
       const body = document.body;
       const toggleBtn = document.getElementById("themeToggle");
@@ -235,6 +234,7 @@
       71: "약한 눈", 73: "눈", 75: "강한 눈", 80: "소나기", 81: "소나기", 82: "강한 소나기", 95: "뇌우"
     };
 
+    // 메뉴 데이터베이스 (기존과 동일)
     const baseMenus = {
       한식: {
         당떨어짐: ["불고기 백반", "제육볶음", "갈비찜", "뚝배기 불고기"],
@@ -292,31 +292,7 @@
       cold: ["김치찌개", "돼지국밥", "돈코츠 라멘", "설렁탕", "스튜", "감자탕", "우동 정식", "짬뽕밥"]
     };
 
-    const menuImages = {
-      "제육볶음": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/jeyuk.webp",
-      "김치찌개": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/kimchistew.webp",
-      "돼지국밥": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/gukbap.webp",
-      "감자탕": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/gamjatang.webp",
-      "비빔밥": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/bibimbap.webp",
-      "닭갈비": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/dakgalbi.webp",
-      "냉면": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/naengmyeon.webp",
-      "떡볶이": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/tteokbokki.webp",
-      "크림 파스타": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/pasta.webp",
-      "수제버거": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/burger.webp",
-      "안심 스테이크": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/steakdup.webp",
-      "페퍼로니 피자": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/pizza.webp",
-      "샐러드볼": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/salad.webp",
-      "돈까스": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/tonkatsu.webp",
-      "스시 세트": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/sushi.webp",
-      "연어 덮밥": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/sakedup.webp",
-      "돈코츠 라멘": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/ramen.webp",
-      "텐동": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/tendong.webp",
-      "짜장면": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/jajang.webp",
-      "짬뽕": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/jjamppong.webp",
-      "마라탕": "https://pub-8446b0d995164d32a4e280826620546f.r2.dev/maratang.webp"
-    };
-    const defaultFoodImage = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop";
-
+    // 이미지 로직 제거로 인해 관련 함수들 수정됨
     function showToast(message) {
       const toast = document.getElementById("toast");
       toast.innerText = message; toast.className = "show";
@@ -405,6 +381,7 @@
       } else { historyBox.style.display = "none"; }
     }
 
+    // 결과 출력 시 이미지 관련 코드 제거됨
     function recommendMenu() {
       const mood = document.getElementById("mood").value;
       const type = document.getElementById("type").value;
@@ -461,12 +438,9 @@
       localStorage.setItem('historyMenus', JSON.stringify(historyMenus));
       updateHistoryUI();
 
-      document.getElementById("resultTitle").innerText = `오늘의 추천 메뉴는 [${currentMenu}] 입니다.`;
+      // JY 정체성 코멘트 추가
+      document.getElementById("resultTitle").innerText = `JY가 픽한 메뉴: [${currentMenu}]`;
       
-      const imgKey = Object.keys(menuImages).find(k => currentMenu.includes(k));
-      document.getElementById("resultImage").src = imgKey ? menuImages[imgKey] : defaultFoodImage;
-      document.getElementById("resultImageContainer").style.display = "block";
-
       let explainText = `🤖 AI의 추천 이유:\n`;
       if (weatherState.loaded) explainText += `현재 ${weatherState.weatherLabel} 날씨를 반영하고, `;
       if (budget === "가성비") explainText += `가성비 좋은 식사 조건을 고려하여 `;
@@ -499,7 +473,7 @@
 
     function shareResult() {
       if (!currentMenu) return;
-      const shareText = `🍽️ 오늘의 맞춤 점심 추천!\n\n👉 추천 메뉴: ${currentMenu}\n\n날씨와 상황을 종합적으로 고려한 AI 추천 결과입니다. 함께 드시러 갈까요?`;
+      const shareText = `🍽️ JY가 추천하는 오늘의 점심!\n\n👉 추천 메뉴: ${currentMenu}\n\n날씨와 상황을 종합적으로 고려한 AI 추천 결과입니다. 함께 드시러 갈까요?`;
       if (navigator.share) {
         navigator.share({ title: '오늘 점심 추천', text: shareText }).catch(() => showToast("공유하기가 취소되었습니다."));
       } else {
